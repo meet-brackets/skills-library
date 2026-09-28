@@ -7,6 +7,7 @@ A library of reusable Claude Code skills. Each skill lives in `skills/<name>/SKI
 | Skill | Description |
 |---|---|
 | [code-review](skills/code-review/SKILL.md) | Review code changes for security, performance, and correctness. |
+| [article-illustration](skills/article-illustration/SKILL.md) | Generate a 3-color risograph header illustration for an article (default violet `#9132E7`, any color on request). |
 
 ## Using a skill
 
