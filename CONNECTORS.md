@@ -7,6 +7,7 @@ Skills in this library work standalone, but some steps light up when you connect
 | `~~source control` | Where your code and PRs live | GitHub (`gh` CLI), GitLab, Bitbucket |
 | `~~project tracker` | Where tickets and requirements live | Jira, Linear, GitHub Issues |
 | `~~knowledge base` | Where team docs and standards live | Confluence, Notion, a `docs/` folder |
+| `~~image generator` | Where images get generated from a prompt + reference image | Higgsfield (MCP), any model accepting image references |
 
 ## How skills use these
 
