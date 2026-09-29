@@ -7,6 +7,7 @@ A library of reusable Claude Code skills. Each skill lives in `skills/<name>/SKI
 | Skill | Description |
 |---|---|
 | [code-review](skills/code-review/SKILL.md) | Review code changes for security, performance, and correctness. |
+| [laravel-development-best-practices](skills/laravel-development-best-practices/SKILL.md) | Team-approved Laravel best practices collected from code-review feedback (with source PRs). |
 
 ## Using a skill
 
