@@ -2,7 +2,11 @@
 
 Source: European Commission, "EU icons for labelling AI-generated content"
 (https://digital-strategy.ec.europa.eu/en/policies/eu-icons-labelling-ai-generated-content),
+the final Code of Practice on Transparency of AI-generated Content, 10 June 2026, Section 2
+(https://digital-strategy.ec.europa.eu/en/policies/code-practice-ai-generated-content),
 and Regulation (EU) 2024/1689, Art. 50(4). Obligations apply from 2 August 2026.
+The icons and the Code are voluntary; the Art. 50 obligation isn't, and following the Code isn't
+conclusive proof of compliance.
 This is an internal working summary, not legal advice. Borderline cases → AI Act Service Desk.
 
 ## The legal trigger
@@ -23,28 +27,47 @@ work.
 
 ## Category reasoning
 
+The visible icon is the basic `AI` icon in every case (see "Which EU icon" below). The category
+decides whether it goes on at all and which source (`generated` / `modified`) the metadata and alt
+text state.
+
 **Stylized illustration (risograph, pop-art, drawn).** Nobody takes it for a photo, so it is not a
-deep fake. Label is voluntary. BRACKETS labels it anyway (`generated`) because we present ourselves
-as an AI-accelerated studio and the T&C say AI visuals are labelled at the asset.
+deep fake. Label is voluntary. BRACKETS labels it anyway (source `generated`) because we present
+ourselves as an AI-accelerated studio and the T&C say AI visuals are labelled at the asset.
 
 **Diagram / infographic.** Schematic by nature, no claim to depict reality. Skip.
 
 **UI mockup of a fictional or concept product.** Reads as a design, not as evidence. Skip.
 If the mockup is presented as a real, shipped product or a real client's screen (case study
-"screenshot" that was actually generated), it can mislead → `generated`.
+"screenshot" that was actually generated), it can mislead → source `generated`.
 
 **Photorealistic, fully generated.** People, offices, events, products, places that look real.
-This is the core deep-fake case → `generated`, required.
+This is the core deep-fake case → source `generated`, required.
 
 **Real photo edited by AI.** Background swapped, people or objects added / removed, faces changed.
-If the edited result could pass as an authentic photo → `modified`, required. Pure technical edits
-(upscaling, denoise, color correction, crop) that don't change what the photo shows → not required.
+If the edited result could pass as an authentic photo → source `modified`, required. Pure technical
+edits (upscaling, denoise, color correction, crop) that don't change what the photo shows → not
+required.
 
-**Small formats.** The EU basic icon (`ai`) is for cases where AI was involved and a compact mark
-is needed, or where a custom text label or an interactive second layer carries the detail. Use it
-when the image's shorter side is under ~500 px.
+## Which EU icon
 
-## Which EU icon means what
+What the Code of Practice requires (Section 2, Measure 1.1):
+
+- **(a) Required:** the icon's main visual element is the capitalised acronym **"AI"**, letters of
+  the same height, proportions kept when resized.
+- **(b) Encouraged, not required:** supplementing it with whether the content is "generated" or
+  "modified", in the icon, next to it, or in an (interactive) second layer.
+- **(c)** Size and style (contrast, colour, typography) may vary with the context, as long as the
+  icon stays clear, readable and recognisable.
+
+Annex 1: user testing found the variants with a text label ("modified") significantly clearer, and
+the basic icon is meant to be supplemented by further information or an alternative text label.
+
+**BRACKETS policy:** the basic `ai` icon by default, for every category that gets a label. It meets
+Measure 1.1(a), including for deep fakes. The generated / modified detail goes into the alt text and
+the XMP metadata instead. The `generated` / `modified` pills stay available on request; for a
+photorealistic deep fake of a real, identifiable person or a news-like event, mention that the EU
+recommends them.
 
 | Icon | Meaning (EU) | Example (EU) |
 |---|---|---|
@@ -54,10 +77,20 @@ when the image's shorter side is under ~500 px.
 
 ## Display rules (summary)
 
-- Clearly perceptible and distinguishable at the latest at first exposure.
-- No intervening overlay elements on top of the icon.
+- Clearly perceivable and distinguishable at the latest at first exposure (Art. 50(5); Code 1.2.1(d)).
+- Remains visible against any background (1.2.1(d)). This is why `style=auto` falls back to the
+  solid variant on busy corners.
+- Placed where no intervening overlay elements exist; the Code's example is the top right corner
+  (1.2.2(a)), which is an example, not a rule.
 - Embedded directly in the content unless an equivalent alternative exists; must remain visible
-  when the content is re-shared or downloaded. **This is why the skill burns the icon into pixels.**
-- Clearly visible size; plain accompanying text; alt text / ARIA indicating AI content where possible.
-- User testing showed the icon works better with a text label (hence `generated` / `modified`
-  pills over the bare `ai` badge when there's room).
+  when the content is re-shared or downloaded (1.2.1(c)). **This is why the skill burns the icon
+  into pixels.**
+- Accessible: alt text / ARIA indicating AI content, high contrast (Art. 50(5); Measure 1.1).
+
+## Size
+
+There is no legal minimum in pixels (Measure 1.1(c)). What counts is that the icon is readable at
+the size people actually see it, in CSS pixels, not in the file. A burned-in icon scales with the
+image: a 43 px badge on a 1920×1080 file looks like ~27 px when the image is shown ~1200 px wide,
+and ~9 px on a phone at full width. The default (4 % of the shorter side, min 24 px) is tuned for
+desktop article covers. If an image is shown mainly small (cards, mobile-first), raise `--scale`.
