@@ -1,7 +1,7 @@
 ---
 name: article-illustration
-description: Generate a risograph / pop-art header illustration for an article or any piece of content, in a strict 3-color palette (one primary color + white + black, default BRACKETS violet #9132E7). Trigger with an article URL, pasted text, a file path, or requests like "make a header image for this article", "generate a blog cover", "ilustrácia k článku", "obrázok k článku".
-argument-hint: "<article URL, file path, or pasted content> [color=#RRGGBB]"
+description: Generate a risograph / pop-art header illustration for an article or any piece of content, in a strict 3-color palette (one BRACKETS design-system color + white + black). The color is picked automatically so it differs from the latest meetbrackets.com/thinking articles; only the 10 palette colors are ever used. Optionally animates the image into a seamless, silent, looping MP4 under 1 MB. Trigger with an article URL, pasted text, a file path, or requests like "make a header image for this article", "generate a blog cover", "animate the header", "ilustrácia k článku", "obrázok k článku", "rozanimuj obrázok", "video k článku".
+argument-hint: "<article URL, file path, or pasted content> [color=auto|<palette name>] [video=yes]"
 ---
 
 # /article-illustration
@@ -10,12 +10,13 @@ argument-hint: "<article URL, file path, or pasted content> [color=#RRGGBB]"
 
 Turn an article (or any content) into a conceptual editorial header illustration: bold comic-book
 risograph style, heavy halftone dots, thick black ink outlines, one primary color on a solid
-full-bleed background. The look is anchored by `assets/style-reference.jpg`.
+full-bleed background. The look is anchored by `assets/style-reference.jpg`. On request, the
+finished image becomes a subtle looping animation for the article listing.
 
 ## Usage
 
 ```
-/article-illustration <URL | file path | pasted content> [color=#RRGGBB] [variants=2] [ratio=16:9]
+/article-illustration <URL | file path | pasted content> [color=auto] [variants=2] [ratio=16:9] [video=no] [duration=5]
 ```
 
 Input: @$1
@@ -24,9 +25,11 @@ If no content is provided, ask for it. Everything else has a default:
 
 | Option | Default | Notes |
 |---|---|---|
-| `color` | `#9132E7` (BRACKETS violet) | Any hex. Accept a color name too ("teal", "brand red") and convert it to a hex, then confirm the hex in the reply. |
+| `color` | `auto` | Picked by rotation (Step 2b). The user may name a palette color ("keppel", "Crusta") or give a hex. **Only colors from [references/palette.md](references/palette.md) are allowed.** A hex or color name outside the palette snaps to the nearest palette color; say so in the reply. |
 | `variants` | `2` | 1–4 variants of the same prompt. |
 | `ratio` | `16:9` | Blog header. Use `1:1` / `4:5` for social posts, `21:9` for wide banners. |
+| `video` | `no` | `yes` adds Step 6: animate the image into a seamless looping MP4 (no audio, < 1 MB, ~500 KB). Also on when the user asks to animate ("rozanimuj", "aj video"). |
+| `duration` | `5` | Video length in seconds (5–15). 5 is the model minimum and the cheapest. |
 
 ## How It Works
 
@@ -36,13 +39,15 @@ If no content is provided, ask for it. Everything else has a default:
 ├─────────────────────────────────────────────────────────────────┤
 │  1. Read the content (URL, file, or pasted text)                 │
 │  2. Extract the core idea and invent ONE visual metaphor         │
+│  2b. Pick the palette color (rotation vs. latest articles)       │
 │  3. Fill the prompt template (color, concept, constraints)       │
 │  4. Upload style reference → generate variants (high quality)    │
 │  5. Download, check background color + no text, show results    │
+│  6. (video=yes) Animate → strip audio → optimize MP4 < 1 MB      │
 ├─────────────────────────────────────────────────────────────────┤
-│  STANDALONE: returns the finished prompt to paste into any       │
-│  image model (attach assets/style-reference.jpg yourself)        │
-│  SUPERCHARGED: with ~~image generator, generates the images      │
+│  STANDALONE: returns the finished prompts to paste into any      │
+│  image / video model (attach assets/style-reference.jpg)         │
+│  SUPERCHARGED: with ~~image generator, generates the media       │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -84,10 +89,41 @@ Worked examples:
 If the article is vague or you see two equally strong directions, pick the stronger one and mention
 the alternative in one line of the reply. Don't ask before generating.
 
+## Step 2b — Pick the color
+
+**Hard rule: the primary is always one of the 10 colors in
+[references/palette.md](references/palette.md).** Never invent a hex, never use a "close enough"
+shade, never take a color from the article or its brand. An earlier run shipped a lime background
+(`#9DD92E`) that isn't in the design system; this step exists to stop that.
+
+Consecutive articles on meetbrackets.com/thinking should not share a color. Repeats are fine, just
+not back-to-back. If the user named a palette color, use it (still mention if it matches the latest
+article). Otherwise:
+
+1. Run the rotation script (path relative to this skill's folder):
+   ```
+   python scripts/recent_colors.py --count 8
+   ```
+   When working inside a brackets-web checkout, add `--local-repo <repo root>`: entries that exist
+   locally but aren't on the live listing yet (the article being prepared, unpublished drafts) count
+   as the newest ones.
+2. The script reads the live listing (newest first), samples each article's `og:image` background,
+   maps it to the palette, and prints a ranked suggestion: the latest article's color is excluded,
+   then colors unused in the window, then the least recently used. Off-palette backgrounds are
+   flagged and block nothing.
+3. Take the top suggestion, or among the top 3 the one that best suits the article's mood (e.g. a
+   warm Crusta for a provocative take, a calm Keppel for a measured one). Look up its name, hex and
+   **Light?** flag in palette.md.
+4. If the script fails (offline, site changed), open https://meetbrackets.com/thinking yourself,
+   look at the latest 3–5 article images, and pick a palette color that differs from the newest one.
+
+Report the choice in one line of the reply: which colors the latest articles use and why this one.
+
 ## Step 3 — Fill the prompt template
 
-Replace `{…}` placeholders. Keep the rule blocks verbatim: they encode what went wrong in earlier
-runs (tinted backgrounds, extra accent colors, frames, stray text).
+Replace `{…}` placeholders. `{HEX}` and `{COLOR_NAME}` come from palette.md (exact hex, design-system
+name). Keep the rule blocks verbatim: they encode what went wrong in earlier runs (tinted
+backgrounds, extra accent colors, frames, stray text).
 
 ```text
 Create a conceptual risograph-style editorial illustration for an article header.
@@ -140,8 +176,8 @@ FORMAT: {RATIO} landscape article header.
 **Two exceptions:**
 - If the chosen metaphor **needs** something from the "DO NOT copy" list (e.g. a diagonal beam),
   drop that item from the list. Otherwise the model gets contradictory instructions.
-- For light primaries (yellow, light green, cyan), add: "keep black outlines heavy so white shapes
-  stay readable against the light background".
+- For colors with **Light? = yes** in palette.md (Carribean Green, Supernova, Deep Sky), add: "keep
+  black outlines heavy so white shapes stay readable against the light background".
 
 ## Step 4 — Generate
 
@@ -169,8 +205,10 @@ Without an image generator: return the filled prompt in a code block and tell th
 Download every result into a scratch/temp directory (never into a repo root) and check:
 
 - **Background color:** sample a corner pixel (e.g. Python PIL `getpixel((3,3))`). The models land
-  close to the hex but rarely exact (e.g. `#9034E2` for `#9132E7`). Report the measured value, and
-  if the exact brand hex matters, offer to recolor in post (map the background hue to the exact hex).
+  close to the palette hex but rarely exact (e.g. `#9034E2` for `#9333EA`). Report the measured
+  value. If it drifts visibly from the palette hex, or the exact brand hex matters, offer to recolor
+  in post (map the background hue to the exact hex). A background that lands closer to a **different**
+  palette color, or to none, is a hard fail.
 - **No text or letters** anywhere, **no frame or border**, **no extra colors**.
 - **Style reference not copied:** if the output reproduces the reference composition, regenerate
   once with a stronger concept description.
@@ -178,6 +216,104 @@ Download every result into a scratch/temp directory (never into a repo root) and
 
 If a variant fails a hard rule (text, frame, wrong colors), regenerate it once. If it fails again,
 report it instead of looping.
+
+## Step 6 — Animate (only when `video=yes`)
+
+### 6.1 Pick the source image
+
+- One variant → that one. Several → the strongest by the Step 5 verdict; name the choice in the
+  reply (the user can ask for another).
+- Use the **clean** image: after an optional recolor, **before** `/ai-disclosure`. The disclosure
+  icon goes on the static image only; a video model would deform or animate it.
+
+### 6.2 Write the animation prompt from the actual image
+
+Look at the chosen image again and list what's really in it. Then fill the template. The
+preservation, camera and loop blocks stay verbatim; only `{…}` changes.
+
+- **WHAT TO ANIMATE:** 3–5 elements that exist in **this** image, each with a cyclical motion that
+  ends where it starts: a single pulse of light along a line or pipe, a glint sweeping a glossy
+  surface once, a gear or wheel turning exactly 360°, brush-ink forms breathing with small
+  amplitude, hands or blocks rising and settling back. Name the element as it appears ("the white
+  modular block hanging from the crane", not "objects").
+- **EVERYTHING ELSE IS STATIC:** name the big static parts of this image (central structure, frame
+  lines, background) so the model doesn't wobble them.
+- Never ask for something the image doesn't contain (no new particles, no added light sources).
+
+```text
+Animate this exact image as a subtle, seamlessly looping motion illustration.
+
+STRICT PRESERVATION RULES:
+- Keep every object, icon, and shape from the source image completely unchanged — do not add, remove, duplicate, redesign, or invent any new elements, text, or details
+- Preserve the exact original color palette and the solid {COLOR_NAME} background, no color grading, no color shifts, no lighting changes
+- LOCKED CAMERA: absolutely no camera movement — no pan, no zoom, no drift, no parallax, no push-in. The framing must remain identical for the entire duration
+
+PERFECT LOOP (critical):
+- The last frame must be IDENTICAL to the first frame so the video loops seamlessly with no visible cut
+- All motion must be cyclical: every animated element returns to its exact starting position, rotation, and shape by the end
+- No progressive or one-directional changes that would break the loop
+
+WHAT TO ANIMATE (subtle, slow, elegant — nothing else moves):
+1. {element from the image}: {cyclical motion, e.g. a soft pulse of light travelling along it once, fading back to the start state}
+2. {element}: {e.g. slow constant rotation, exactly one full 360° revolution over the duration so it ends aligned with the start}
+3. {element}: {e.g. a gentle glint of light sweeping across it once, then gone}
+4. {element}: {e.g. gentle undulation, as if slowly breathing, small amplitude, returning to the start pose}
+5. Optional micro-detail: a barely perceptible halftone shimmer on shaded areas
+
+EVERYTHING ELSE IS STATIC: {the image's static parts}, the background — completely frozen, no wobble, no breathing distortion on static elements.
+
+Smooth even timing, no easing spikes, no text appearing.
+```
+
+### 6.3 Generate the video
+
+On Higgsfield with `generate_video`:
+
+- `model: minimax_h3_max` (MiniMax H3 Max: fast and cheap; don't swap in a pricier model unless the
+  user asks)
+- `resolution: 768p`, `duration: {duration}`, `aspect_ratio: {RATIO}`
+- `medias: [{ role: start_image, value: <id> }, { role: end_image, value: <same id> }]`. The **same
+  image as first and last frame** is what makes the loop seamless; the prompt alone isn't enough.
+- `<id>`: the generated image's media id if the generation result exposes one; otherwise
+  `media_import_url` with the result URL. If the image was recolored locally, upload the local file
+  with the Step 4 upload flow (`type: image`).
+- `jobs_wait`, then download the raw MP4 to the scratch directory.
+
+Without a video generator: return the filled animation prompt and tell the user to run it as
+image-to-video with the image as both start and end frame, then do 6.4 themselves.
+
+### 6.4 Strip audio and optimize to < 1 MB
+
+Needs `ffmpeg`/`ffprobe`. If they're missing, say so (Windows: `winget install Gyan.FFmpeg`, macOS:
+`brew install ffmpeg`), hand over the raw MP4, and stop here.
+
+Target ~500 KB, hard limit 1 MB. Video bitrate in kbit/s: `floor(500 * 8 / duration * 0.95)`
+(≈ 760k for 5 s, ≈ 630k for 6 s). Two-pass H.264, no audio, max 1280 px wide, web-friendly. Run it
+in the scratch directory (pass 1 writes log files there):
+
+```bash
+VF="scale='min(1280,iw)':-2,format=yuv420p"
+ffmpeg -y -i raw.mp4 -an -c:v libx264 -preset slow -b:v 760k -vf "$VF" -pass 1 -passlogfile x264 -f null -
+ffmpeg -y -i raw.mp4 -an -c:v libx264 -preset slow -b:v 760k -maxrate 1100k -bufsize 1520k \
+  -vf "$VF" -profile:v high -pass 2 -passlogfile x264 -movflags +faststart file.mp4
+```
+
+Check the size. Over 1 MB, or well above ~600 KB: lower the bitrate by ~20 % and redo both passes
+(at most 2 retries). Delete the `x264*.log*` files afterwards.
+
+### 6.5 Verify the video
+
+- **No audio:** `ffprobe -v error -select_streams a -show_entries stream=index -of csv=p=0 file.mp4`
+  prints nothing.
+- **Size and duration:** `ffprobe -v error -show_entries format=duration,size -of csv=p=0 file.mp4`.
+- **Loop seam:** extract the first and last frame
+  (`ffmpeg -v error -i file.mp4 -frames:v 1 first.png` and
+  `ffmpeg -v error -sseof -0.1 -i file.mp4 -frames:v 1 last.png`) and compare them with PIL
+  (`ImageStat.Stat(ImageChops.difference(a, b)).mean`). An average under ~5 per channel loops
+  cleanly; report the number.
+- **Watch it:** look at a few extracted frames (e.g. at 25 %, 50 %, 75 %). Fail = new objects,
+  text, a camera move, color drift or a melting static element. Regenerate once, then report
+  instead of looping.
 
 ## Output
 
@@ -187,12 +323,18 @@ Hotové, {n} varianty pre „{title}".
 - **A:** `{local path}`: {url}
 - **B:** `{local path}`: {url}
 
+**Farba:** {COLOR_NAME} `{HEX}`. Posledné články: {color 1}, {color 2}, {color 3}. {one-line why}
+
 **Metafora:** {2–3 sentences: the central object and what each element stands for}
 
 - **A** {one-line character + verdict}
 - **B** {one-line character + verdict}
 
 Pozadie: `{measured hex}` (cieľ `{HEX}`). {only if it matters: offer to recolor}
+
+{only with video=yes:}
+**Video (z varianty {X}):** `{local path}`, {size} KB, {duration} s, bez zvuku, loop diff {n}.
+Animované: {short list of the animated elements}.
 
 {one question: tweak a variant, more variants, or use one somewhere}
 ```
@@ -205,8 +347,13 @@ Reply in the user's language (the template above is Slovak, the BRACKETS default
    Step 2.
 2. **Symbols from the article, not stock metaphors.** No lightbulbs, rockets or puzzle pieces unless
    the article is actually about them.
-3. **Changing color:** only `{HEX}` / `{COLOR_NAME}` change. The style reference is violet, which is
-   fine because the prompt says to copy technique, not palette.
+3. **Changing color:** only `{HEX}` / `{COLOR_NAME}` change, always to a palette.md entry. The style
+   reference is violet, which is fine because the prompt says to copy technique, not palette.
 4. **Using it on meetbrackets.com:** the image goes to
    `src/assets/images/thinking/<slug>/featuredMedia/image.jpg` with a bilingual `alt`. It must live
-   under that entry's own slug (see the brackets-web `dont-list.md` rules on images).
+   under that entry's own slug (see the brackets-web `dont-list.md` rules on images). The video goes
+   to `public/videos/thinking/<slug>/featuredMedia/video/file.mp4`, with `featuredMedia.listingDisplay: video`
+   and `featuredMedia.video.file: /videos/thinking/<slug>/featuredMedia/video/file.mp4` in the
+   frontmatter.
+5. **AI disclosure:** run `/ai-disclosure` on the static image after Step 5 (or 6, if animating from
+   it). The video stays without the icon; ai-disclosure doesn't support video yet.
