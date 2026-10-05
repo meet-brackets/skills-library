@@ -1,6 +1,17 @@
 ---
 name: content-diagrams
-description: Turn visual placeholders in BRACKETS content ([VIZUÁL: …] / [VISUAL: …] notes) or a plain request into simple, flat diagrams in the meetbrackets.com design system (exact tokens, Poppins), in every language the entry has, themed for the surface they render on (dark article body, light, primary, case-study brand), then place them into the content with alt text. Any diagram type that fits the content (flow, timeline, cycle, Venn, 2×2 matrix, comparison, swimlane, funnel, hierarchy, hub and spoke, spectrum, simple data); one image that reads on desktop and phone. Rendered by default from HTML/SVG in a headless browser (real Poppins, exact tokens and text, no credits); Higgsfield image generation only when the user asks for it. Trigger with "vizuál", "diagram do článku", "spracuj [VIZUÁL] placeholdery", "sprav diagram / maticu / timeline / schému", "make the article visuals", "diagram for this section", "light verzia diagramu", or when a draft being published contains [VIZUÁL: or [VISUAL: lines.
+description: >-
+  Turn visual placeholders in BRACKETS content ([VIZUÁL: …] / [VISUAL: …] notes) or a plain request
+  into simple, flat diagrams in the meetbrackets.com design system (exact tokens, Poppins), in every
+  language the entry has, themed for the surface they render on (dark article body, light, primary,
+  case-study brand), then place them into the content with alt text. Any diagram type that fits the
+  content (flow, timeline, cycle, Venn, 2×2 matrix, comparison, swimlane, funnel, hierarchy, hub and
+  spoke, spectrum, simple data); one image that reads on desktop and phone. Rendered by default from
+  HTML/SVG in a headless browser (real Poppins, exact tokens and text, no credits); Higgsfield image
+  generation only when the user asks for it. Trigger with "vizuál", "diagram do článku", "spracuj
+  [VIZUÁL] placeholdery", "sprav diagram / maticu / timeline / schému", "make the article visuals",
+  "diagram for this section", "light verzia diagramu", or when a draft being published contains
+  [VIZUÁL: or [VISUAL: lines.
 argument-hint: "<file | URL | text> [engine=html|higgsfield] [theme=auto|dark|dark-subtle|light|primary|brand|<hex>] [colors=auto|mono|palette] [variants=1]"
 ---
 
