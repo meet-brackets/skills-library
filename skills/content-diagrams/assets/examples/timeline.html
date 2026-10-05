@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Pattern 2: timeline with a branch. Vertical by default (5+ steps stay readable on a phone);
+     for up to 4 short steps a horizontal row works too. Step K branches into 2–3 quiet pills. -->
+<link rel="stylesheet" href="base.css">
+<style>
+  .tl { position: relative; display: flex; flex-direction: column; gap: 22px; }
+  .tl::before { content: ''; position: absolute; left: 47px; top: 48px; bottom: 48px; width: var(--hair); background: var(--d-line); }
+  .tl__step { position: relative; display: grid; grid-template-columns: 96px 1fr; column-gap: 36px; align-items: center; }
+  .tl__step .num { background: var(--d-bg); }
+  .tl__branch { grid-column: 2; display: flex; align-items: flex-start; gap: 16px; margin-top: 14px; }
+  .tl__elbow { flex: none; width: 36px; height: 34px; border-left: var(--hair) solid var(--d-line); border-bottom: var(--hair) solid var(--d-line); border-bottom-left-radius: 12px; }
+  .tl__pills { display: flex; flex-wrap: wrap; gap: 16px; padding-top: 10px; }
+</style>
+</head>
+<body>
+<script src="diagram.js"></script>
+<div class="diagram">
+  <div class="tl">
+    <div class="tl__step"><span class="num">1</span><span class="label"><span data-l="en">Why now</span><span data-l="sk">Prečo teraz</span></span></div>
+    <div class="tl__step"><span class="num">2</span><span class="label"><span data-l="en">What you already have</span><span data-l="sk">Čo už máte</span></span></div>
+    <div class="tl__step"><span class="num">3</span><span class="label"><span data-l="en">Through the customer's eyes</span><span data-l="sk">Očami zákazníka</span></span></div>
+    <div class="tl__step">
+      <span class="num">4</span><span class="label"><span data-l="en">Second view</span><span data-l="sk">Druhý pohľad</span></span>
+      <div class="tl__branch">
+        <span class="tl__elbow"></span>
+        <div class="tl__pills">
+          <span class="pill small quiet"><span data-l="en">Colleague</span><span data-l="sk">Kolega</span></span>
+          <span class="pill small quiet"><span data-l="en">AI agent</span><span data-l="sk">AI agent</span></span>
+          <span class="pill small quiet"><span data-l="en">Measurement tools</span><span data-l="sk">Meracie nástroje</span></span>
+        </div>
+      </div>
+    </div>
+    <div class="tl__step"><span class="num">5</span><span class="label"><span data-l="en">Priorities</span><span data-l="sk">Priority</span></span></div>
+    <div class="tl__step"><span class="num">6</span><span class="label"><span data-l="en">Decide together</span><span data-l="sk">Spoločné rozhodnutie</span></span></div>
+  </div>
+</div>
+</body>
+</html>

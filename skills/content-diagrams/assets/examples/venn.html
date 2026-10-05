@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Pattern 3: Venn of two views. Two outlined circles, the overlap filled with the accent,
+     one note in each non-overlap part, one quiet pill below for the third case.
+     Geometry: r = 320, centers 340 apart → lens 300 wide (fits an 11-letter word at label size). -->
+<link rel="stylesheet" href="base.css">
+<style>
+  .venn { position: relative; width: 980px; height: 646px; align-self: center; }
+  .venn svg { position: absolute; inset: 0; }
+  .venn circle { fill: none; stroke: var(--d-outline); stroke-width: var(--stroke); }
+  .venn .lens { fill: var(--d-accent); stroke: none; }
+  .venn__txt { position: absolute; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; gap: 10px; }
+  .venn__txt.left { left: 40px; width: 280px; }
+  .venn__txt.right { left: 660px; width: 280px; }
+  .venn__txt.mid { left: 360px; width: 260px; }
+  .venn__note { margin-top: 28px; }
+  .venn-below { align-self: center; }
+</style>
+</head>
+<body>
+<script src="diagram.js"></script>
+<div class="diagram">
+  <div class="venn">
+    <svg viewBox="0 0 980 646" width="980" height="646">
+      <path class="lens" d="M490 52 A320 320 0 0 1 490 594 A320 320 0 0 1 490 52 Z"/>
+      <circle cx="320" cy="323" r="320"/>
+      <circle cx="660" cy="323" r="320"/>
+    </svg>
+    <div class="venn__txt left">
+      <span class="h"><span data-l="en">Designer</span><span data-l="sk">Dizajnér</span></span>
+      <span class="text venn__note"><span data-l="en">Only one source: weigh up</span><span data-l="sk">Len jeden zdroj: zvážiť</span></span>
+    </div>
+    <div class="venn__txt mid on-accent">
+      <span class="label"><span data-l="en">Strongest signal</span><span data-l="sk">Najsilnejší signál</span></span>
+      <span class="text on-accent"><span data-l="en">moves up</span><span data-l="sk">ide hore</span></span>
+    </div>
+    <div class="venn__txt right">
+      <span class="h"><span data-l="en">Second view</span><span data-l="sk">Druhý pohľad</span></span>
+      <span class="text"><span data-l="en">colleague or AI</span><span data-l="sk">kolega alebo AI</span></span>
+      <span class="text venn__note"><span data-l="en">Only one source: weigh up</span><span data-l="sk">Len jeden zdroj: zvážiť</span></span>
+    </div>
+  </div>
+  <span class="pill quiet venn-below"><span data-l="en">Disagreement: check or test</span><span data-l="sk">Rozpor: overiť alebo otestovať</span></span>
+</div>
+</body>
+</html>

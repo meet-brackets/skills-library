@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- UML 2.5 diagram types for "UML diagrams: Modeling software systems": root → two families
+     (structure / behavior) with the nested interaction group; the four types to start with are
+     outlined in the accent. Families carry data-cat, so --colors palette gives each its own color. -->
+<link rel="stylesheet" href="base.css">
+<style>
+  .diagram { --pad: 64px; gap: 0; }
+  .root { align-self: center; align-items: center; text-align: center; gap: 2px; padding: 26px 52px; }
+  .root .text { color: var(--d-on-accent); }
+  .fams { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto 1fr; gap: 40px; margin-top: 84px; align-items: start; }
+  .fams > .card:nth-of-type(2) { grid-column: 2; grid-row: 1 / span 2; }
+  .card { border: var(--hair) solid var(--d-line); border-radius: var(--radius-box); overflow: hidden; }
+  .card__head { padding: 26px 36px 22px; display: flex; flex-direction: column; gap: 2px;
+                border-bottom: var(--hair) solid var(--d-line); }
+  .card__body { padding: 28px 36px 34px; display: flex; flex-direction: column; gap: 26px; }
+  .types { display: flex; flex-wrap: wrap; gap: 14px; }
+  .types .pill.small { padding: 8px 24px; }
+  .sub { border: var(--hair) solid var(--d-line); border-radius: 20px; padding: 22px 26px 26px; display: flex; flex-direction: column; gap: 16px; }
+  .sub__head { display: flex; flex-direction: column; gap: 0; }
+  .sub__tag { align-self: flex-start; }
+  /* legend sits in the free space under the shorter card */
+  .legend { grid-column: 1; grid-row: 2; display: flex; align-items: center; gap: 18px; padding: 8px 36px; }
+  .legend .text { white-space: nowrap; }
+  .legend__swatch { flex: none; width: 72px; height: 44px; border: var(--stroke) solid var(--d-accent-line); border-radius: 999px; }
+</style>
+</head>
+<body>
+<script src="diagram.js"></script>
+<div class="diagram ratio-auto">
+  <div class="box fill root" id="root">
+    <span class="label">UML 2.5</span>
+    <span class="text"><span data-l="en">14 diagram types</span><span data-l="sk">14 typov diagramov</span></span>
+  </div>
+
+  <div class="fams">
+    <div class="card" data-cat="cornflower-blue">
+      <div class="card__head cat-fill" id="f-structure">
+        <span class="label"><span data-l="en">Structure</span><span data-l="sk">Štruktúra</span></span>
+        <span class="text"><span data-l="en">What the system is</span><span data-l="sk">Čo systém je</span></span>
+      </div>
+      <div class="card__body">
+        <div class="types">
+          <span class="pill small accent"><span data-l="en">Class</span><span data-l="sk">Triedy</span></span>
+          <span class="pill small"><span data-l="en">Component</span><span data-l="sk">Komponenty</span></span>
+          <span class="pill small"><span data-l="en">Deployment</span><span data-l="sk">Nasadenie</span></span>
+          <span class="pill small"><span data-l="en">Object</span><span data-l="sk">Objekty</span></span>
+          <span class="pill small"><span data-l="en">Package</span><span data-l="sk">Balíky</span></span>
+          <span class="pill small"><span data-l="en">Composite structure</span><span data-l="sk">Zložená štruktúra</span></span>
+          <span class="pill small"><span data-l="en">Profile</span><span data-l="sk">Profily</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" data-cat="princess-perfume">
+      <div class="card__head cat-fill" id="f-behavior">
+        <span class="label"><span data-l="en">Behavior</span><span data-l="sk">Správanie</span></span>
+        <span class="text"><span data-l="en">What the system does</span><span data-l="sk">Čo systém robí</span></span>
+      </div>
+      <div class="card__body">
+        <div class="types">
+          <span class="pill small accent"><span data-l="en">Use case</span><span data-l="sk">Prípady použitia</span></span>
+          <span class="pill small accent"><span data-l="en">Activity</span><span data-l="sk">Aktivity</span></span>
+          <span class="pill small"><span data-l="en">State machine</span><span data-l="sk">Stavový automat</span></span>
+        </div>
+        <div class="sub" data-cat="keppel">
+          <div class="sub__head">
+            <span class="label sub__tag cat-text"><span data-l="en">Interaction</span><span data-l="sk">Interakcie</span></span>
+            <span class="text"><span data-l="en">Who talks to whom, and when</span><span data-l="sk">Kto s kým komunikuje a kedy</span></span>
+          </div>
+          <div class="types">
+            <span class="pill small accent"><span data-l="en">Sequence</span><span data-l="sk">Sekvenčný</span></span>
+            <span class="pill small"><span data-l="en">Communication</span><span data-l="sk">Komunikačný</span></span>
+            <span class="pill small"><span data-l="en">Timing</span><span data-l="sk">Časový</span></span>
+            <span class="pill small"><span data-l="en">Interaction overview</span><span data-l="sk">Prehľad interakcií</span></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="legend">
+      <span class="legend__swatch"></span>
+      <span class="text"><span data-l="en">Start with these four</span><span data-l="sk">Začnite týmito štyrmi</span></span>
+    </div>
+  </div>
+
+  <i class="link" data-from="root" data-to="f-structure" data-shape="elbow" data-radius="24"></i>
+  <i class="link" data-from="root" data-to="f-behavior" data-shape="elbow" data-radius="24"></i>
+</div>
+</body>
+</html>

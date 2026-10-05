@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Pattern 5: swimlane before / after (replaces a "when to use X" table). One lane per item:
+     name + quiet sample pill, a pill on each side of the central accent bar. The more common option
+     gets the accent outline. A lane where before = after is ONE pill spanning across the bar. -->
+<link rel="stylesheet" href="base.css">
+<style>
+  /* Lane name sits on its own row above the lane, so both pills get half the canvas (stays readable on a phone). */
+  .sw { display: grid; grid-template-columns: 1fr 28px 72px 28px 1fr; row-gap: 16px; align-items: center; }
+  .sw__head { grid-row: 1; text-align: center; margin-bottom: 16px; }
+  .sw__bar { grid-column: 3; grid-row: 2 / span 8; /* span = 2 rows per lane; "-1" does not work in an implicit grid */ align-self: stretch; border-radius: 999px; background: var(--d-accent);
+             display: flex; align-items: center; justify-content: center; }
+  .sw__bar span { writing-mode: vertical-rl; transform: rotate(180deg); color: var(--d-on-accent); font-size: var(--fs-label); font-weight: 500; }
+  .sw__name { grid-column: 1; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 20px; }
+  .sw .pill { font-size: var(--fs-text); padding: 18px 32px; border-radius: 40px; min-height: 96px; }
+  .sw .pill.small { min-height: 0; padding: 6px 20px; border-radius: 999px; }
+  .sw__conn { height: var(--hair); background: var(--d-line); }
+  .sw__span { grid-column: 1 / -1; position: relative; z-index: 1; background: var(--d-bg); }
+</style>
+</head>
+<body>
+<script src="diagram.js"></script>
+<div class="diagram">
+  <div class="sw">
+    <span class="label subtle sw__head" style="grid-column: 1"><span data-l="en">Before the audit</span><span data-l="sk">Pred auditom</span></span>
+    <span class="label subtle sw__head" style="grid-column: 5"><span data-l="en">After the audit</span><span data-l="sk">Po audite</span></span>
+    <div class="sw__bar"><span><span data-l="en">UX audit</span><span data-l="sk">UX audit</span></span></div>
+
+    <div class="sw__name" style="grid-row: 2"><span class="label"><span data-l="en">Heatmaps and recordings</span><span data-l="sk">Heatmapy a záznamy</span></span></div>
+    <span class="pill" style="grid-row: 3; grid-column: 1"><span data-l="en">With basic analytics</span><span data-l="sk">So základnou analytikou</span></span>
+    <span class="sw__conn" style="grid-row: 3; grid-column: 2"></span><span class="sw__conn" style="grid-row: 3; grid-column: 4"></span>
+    <span class="pill" style="grid-row: 3; grid-column: 5"><span data-l="en">Confirm a priority or reveal a hidden problem</span><span data-l="sk">Potvrdia prioritu alebo odhalia skrytý problém</span></span>
+
+    <div class="sw__name" style="grid-row: 4"><span class="label"><span data-l="en">User testing</span><span data-l="sk">Testovanie s ľuďmi</span></span>
+      <span class="pill small quiet"><span data-l="en">5 per group, 20 to 40 to measure</span><span data-l="sk">5 na skupinu, 20 až 40 pri meraní</span></span></div>
+    <span class="pill" style="grid-row: 5; grid-column: 1"><span data-l="en">No data, or a baseline to compare</span><span data-l="sk">Bez dát alebo na východiskový stav</span></span>
+    <span class="sw__conn" style="grid-row: 5; grid-column: 2"></span><span class="sw__conn" style="grid-row: 5; grid-column: 4"></span>
+    <span class="pill accent" style="grid-row: 5; grid-column: 5"><span data-l="en">Only what's unclear</span><span data-l="sk">Len sporné body</span></span>
+
+    <div class="sw__name" style="grid-row: 6"><span class="label"><span data-l="en">Interviews</span><span data-l="sk">Rozhovory</span></span>
+      <span class="pill small quiet"><span data-l="en">Around 12 per group</span><span data-l="sk">Okolo 12 na skupinu</span></span></div>
+    <span class="pill" style="grid-row: 7; grid-column: 1"><span data-l="en">Unknown customer or big redesign</span><span data-l="sk">Neznámy zákazník alebo veľký redizajn</span></span>
+    <span class="sw__conn" style="grid-row: 7; grid-column: 2"></span><span class="sw__conn" style="grid-row: 7; grid-column: 4"></span>
+    <span class="pill" style="grid-row: 7; grid-column: 5"><span data-l="en">Why a specific problem happens</span><span data-l="sk">Prečo konkrétny problém vzniká</span></span>
+
+    <div class="sw__name" style="grid-row: 8"><span class="label"><span data-l="en">Survey</span><span data-l="sk">Dotazník</span></span>
+      <span class="pill small quiet"><span data-l="en">Many more responses</span><span data-l="sk">Výrazne viac odpovedí</span></span></div>
+    <span class="pill sw__span" style="grid-row: 9"><span data-l="en">How many and how often, not why</span><span data-l="sk">Koľko a ako často, nie prečo</span></span>
+  </div>
+</div>
+</body>
+</html>

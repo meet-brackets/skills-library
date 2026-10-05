@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Pattern 1: two-panel comparison (bad → good), rebuilt after the approved Higgsfield image.
+     Left: a tall document of dense, evenly spaced identical bars (no order). Right: column labels,
+     five accent-outlined numbered rows with white bars, then the quieter ranked rest.
+     One grid (subgrid) aligns the column labels, the top rows and the rest. Arrow drawn by diagram.js. -->
+<link rel="stylesheet" href="base.css">
+<style>
+  .diagram { --pad: 72px; }
+  /* headings share the top row (the left one may run over the arrow column), panels the second */
+  .cmp { display: grid; grid-template-columns: 236px 112px 1fr; grid-template-rows: auto 1fr; row-gap: 36px; flex: 1; }
+  .cmp__h1 { grid-column: 1 / 3; grid-row: 1; align-self: end; }
+  .cmp__h2 { grid-column: 3; grid-row: 1; align-self: end; }
+  .cmp__doc-col { grid-column: 1; grid-row: 2; display: flex; }
+  .cmp__tbl-col { grid-column: 3; grid-row: 2; }
+
+  .doc { flex: 1; min-height: 640px; border: var(--hair) solid var(--d-line); border-radius: var(--radius-box);
+         padding: 34px 30px; display: flex; flex-direction: column; justify-content: space-between; }
+  .doc .bar { height: 12px; border-radius: 6px; background: var(--d-subtle); opacity: .75; }
+  .doc .bar:nth-child(3n+2) { width: 84%; }
+  .doc .bar:nth-child(4n+3) { width: 92%; }
+
+  .tbl { display: grid; grid-template-columns: 40px repeat(4, minmax(104px, auto)); column-gap: 18px; row-gap: 16px; }
+  .tbl__row { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; align-items: center; }
+  .tbl__head { align-items: end; text-align: center; margin-bottom: 4px; }
+  .tbl__row.top { border: var(--stroke) solid var(--d-accent-line); border-radius: 999px;
+                  padding: 0 30px 0 26px; margin: 0 -30px 0 -26px; height: 74px; }
+  .tbl__num { font-size: var(--fs-label); font-weight: 500; color: var(--d-accent-line); text-align: center; line-height: 1; }
+  .tbl .bar { height: 14px; border-radius: 7px; }
+  .tbl__row.top .bar { background: var(--d-text); }
+  .tbl__rest-label { grid-column: 1 / -1; margin-top: 22px; }
+  .tbl__row.rest .bar { background: var(--d-subtle); opacity: .75; height: 12px; }
+  .tbl__row.rest { margin-top: 4px; }
+</style>
+</head>
+<body>
+<script src="diagram.js"></script>
+<div class="diagram ratio-3-2">
+  <div class="cmp">
+    <span class="label cmp__h1"><span data-l="en">100 findings, no order</span><span data-l="sk">100 nálezov bez poradia</span></span>
+    <span class="label cmp__h2"><span data-l="en">Top 5 + the ranked rest</span><span data-l="sk">Top 5 + zoradený zvyšok</span></span>
+
+    <div class="cmp__doc-col">
+      <div class="doc" id="doc">
+        <i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i>
+        <i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i>
+        <i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i>
+      </div>
+    </div>
+
+    <div class="cmp__tbl-col">
+      <div class="tbl" id="tbl">
+        <div class="tbl__row tbl__head text">
+          <span></span>
+          <span><span data-l="en">What</span><span data-l="sk">Čo</span></span>
+          <span><span data-l="en">Why</span><span data-l="sk">Prečo</span></span>
+          <span><span data-l="en">What it brings</span><span data-l="sk">Čo to prinesie</span></span>
+          <span><span data-l="en">Effort</span><span data-l="sk">Náročnosť</span></span>
+        </div>
+        <div class="tbl__row top" id="row3"><span class="tbl__num">1</span><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i></div>
+        <div class="tbl__row top"><span class="tbl__num">2</span><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i></div>
+        <div class="tbl__row top"><span class="tbl__num">3</span><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i></div>
+        <div class="tbl__row top"><span class="tbl__num">4</span><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i></div>
+        <div class="tbl__row top"><span class="tbl__num">5</span><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i></div>
+        <span class="text tbl__rest-label"><span data-l="en">Ranked rest</span><span data-l="sk">Zoradený zvyšok</span></span>
+        <div class="tbl__row rest"><span></span><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i></div>
+        <div class="tbl__row rest"><span></span><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i></div>
+        <div class="tbl__row rest"><span></span><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i></div>
+      </div>
+    </div>
+  </div>
+  <i class="link" data-from="doc" data-to="tbl" data-shape="straight" data-from-side="right" data-to-side="left"
+     data-tone="accent" data-weight="stroke" data-arrow="end" data-gap="28"></i>
+</div>
+</body>
+</html>
