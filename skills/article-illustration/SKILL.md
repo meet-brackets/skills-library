@@ -16,7 +16,7 @@ finished image becomes a subtle looping animation for the article listing.
 ## Usage
 
 ```
-/article-illustration <URL | file path | pasted content> [color=auto] [variants=2] [ratio=16:9] [video=no] [duration=5]
+/article-illustration <URL | file path | pasted content> [color=auto] [variants=1] [ratio=16:9] [video=no] [duration=5]
 ```
 
 Input: @$1
@@ -26,7 +26,7 @@ If no content is provided, ask for it. Everything else has a default:
 | Option | Default | Notes |
 |---|---|---|
 | `color` | `auto` | Picked by rotation (Step 2b). The user may name a palette color ("keppel", "Crusta") or give a hex. **Only colors from [references/palette.md](references/palette.md) are allowed.** A hex or color name outside the palette snaps to the nearest palette color; say so in the reply. |
-| `variants` | `2` | 1–4 variants of the same prompt. |
+| `variants` | `1` | 1 or 2 images. Higgsfield credits are expensive, so one image is the default. 2 only when the user asks for more variants (then Step 0 asks how many). Never more than 2. The video is always a single one. |
 | `ratio` | `16:9` | Blog header. Use `1:1` / `4:5` for social posts, `21:9` for wide banners. |
 | `video` | ask | Asked in Step 0 unless already decided. `yes` adds Step 6: animate the image into a seamless looping MP4 (no audio, < 1 MB, ~500 KB). A request to animate ("rozanimuj", "aj video") counts as `yes`. |
 | `duration` | `5` | Video length in seconds (5–15). 5 is the model minimum and the cheapest. |
@@ -42,7 +42,7 @@ If no content is provided, ask for it. Everything else has a default:
 │  2. Extract the core idea and invent ONE visual metaphor         │
 │  2b. Pick the palette color (rotation vs. latest articles)       │
 │  3. Fill the prompt template (color, concept, constraints)       │
-│  4. Upload style reference → generate variants (high quality)    │
+│  4. Upload style reference → generate 1 image (high quality)     │
 │  5. Download, check background color + no text, show results    │
 │  6. (video=yes) Animate → strip audio → optimize MP4 < 1 MB      │
 │     (fully automatic: scripts/optimize_video.py, no setup)       │
@@ -53,18 +53,32 @@ If no content is provided, ask for it. Everything else has a default:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-## Step 0 — Ask about the video (once, before anything is generated)
+## Step 0 — Ask up front (once, before anything is generated)
 
-The user should know up front that the illustration can also become a looping video. Unless the
-request already decides it (`video=yes|no`, "rozanimuj", "aj video", "len obrázok"), ask **one**
-question before Step 1 (with AskUserQuestion when available), in the user's language:
+**Credits are expensive (Higgsfield).** The default is one image and, if requested, one video built
+from it. Never generate extra images or videos "to choose from" on your own.
 
-> Vygenerovať k ilustrácii aj animované video? Z hotového obrázka spravím jemnú, plynulo sa
-> opakujúcu animáciu (MiniMax H3 Max, lacný model), bez zvuku, ako MP4 do 1 MB (~500 KB).
-> Všetko vrátane optimalizácie urobím sám.
+Ask before Step 1, in **one** AskUserQuestion call (or one message when it isn't available), in the
+user's language. Skip a question when the request already answers it.
 
-Options: **Iba obrázok** / **Obrázok + video**. Remember the answer and don't ask again. This is the
-only question before generating; everything else has a default.
+1. **Video**, unless the request already decides it (`video=yes|no`, "rozanimuj", "aj video",
+   "len obrázok"):
+
+   > Vygenerovať k ilustrácii aj animované video? Z hotového obrázka spravím jemnú, plynulo sa
+   > opakujúcu animáciu (MiniMax H3 Max, lacný model), bez zvuku, ako MP4 do 1 MB (~500 KB).
+   > Všetko vrátane optimalizácie urobím sám.
+
+   Options: **Iba obrázok** / **Obrázok + video**.
+2. **Number of variants**, only when the user asks for more variants or options ("viac variant",
+   "nejaké možnosti", "variants" without a number):
+
+   > Koľko variantov obrázka? Každý stojí kredity.
+
+   Options: **1 variant** / **2 varianty**. A user who gives a number (`variants=2`, "dve varianty")
+   isn't asked; anything above 2 is capped at 2, and the reply says so.
+
+Without a request for more variants, don't ask about them: generate one. Remember the answers and
+don't ask again. These are the only questions before generating; everything else has a default.
 
 ## Step 1 — Read the content
 
@@ -102,7 +116,7 @@ Worked examples:
 | Company culture starts at day zero (small team) | Isometric modular team building with people in the windows. A new block is lowered into an empty slot (day zero), the top is still scaffolding (built every day), hands from all sides support it (shared care), and organic ink growth carries ritual symbols (coffee, pizza, dice, music, mountain cabin). |
 
 If the article is vague or you see two equally strong directions, pick the stronger one and mention
-the alternative in one line of the reply. Don't ask about it before generating (the Step 0 video question is the only one).
+the alternative in one line of the reply. Don't ask about it before generating (the Step 0 questions are the only ones).
 
 ## Step 2b — Pick the color
 
@@ -207,7 +221,7 @@ If **~~image generator** is connected (tested with Higgsfield):
    - `model: gpt_image_2_5`
    - `quality: high`, `resolution: 2k`. **Always set these.** The default is `low`, and that's why an
      early run came out with thin lines and mushy detail.
-   - `aspect_ratio: {RATIO}`, `count: {variants}`
+   - `aspect_ratio: {RATIO}`, `count: {variants}` (1 by default, max 2)
    - `medias: [{ role: image_references, value: <media_id> }]`
    - Leave `use_unlim` unset (if the server asks, relay the question to the user).
 3. **Wait** with `jobs_wait` until all jobs are terminal (a high-quality 2k run takes ~30–60 s).
@@ -229,15 +243,15 @@ Download every result into a scratch/temp directory (never into a repo root) and
   once with a stronger concept description.
 - **Look at the image.** Read it and judge the metaphor: is the central idea readable at a glance?
 
-If a variant fails a hard rule (text, frame, wrong colors), regenerate it once. If it fails again,
-report it instead of looping.
+If an image fails a hard rule (text, frame, wrong colors), regenerate it once (one image, not a
+new batch). If it fails again, report it instead of looping.
 
 ## Step 6 — Animate (only when `video=yes`)
 
 ### 6.1 Pick the source image
 
-- One variant → that one. Several → the strongest by the Step 5 verdict; name the choice in the
-  reply (the user can ask for another).
+- One image → that one. Two variants → the stronger by the Step 5 verdict; name the choice in the
+  reply. Animate **one** image only, never both (the user can ask for the other later).
 - Use the **clean** image: after an optional recolor, **before** `/ai-disclosure`. The disclosure
   icon goes on the static image only; a video model would deform or animate it.
 
@@ -286,7 +300,8 @@ On Higgsfield with `generate_video`:
 
 - `model: minimax_h3_max` (MiniMax H3 Max: fast and cheap; don't swap in a pricier model unless the
   user asks)
-- `resolution: 768p`, `duration: {duration}`, `aspect_ratio: {RATIO}`
+- `resolution: 768p`, `duration: {duration}`, `aspect_ratio: {RATIO}`, `batch_size: 1` (always one
+  video; set it explicitly)
 - `medias: [{ role: start_image, value: <id> }, { role: end_image, value: <same id> }]`. The **same
   image as first and last frame** is what makes the loop seamless; the prompt alone isn't enough.
 - `<id>`: the generated image's media id if the generation result exposes one; otherwise
@@ -328,31 +343,30 @@ If pip can't reach the network, retry once; if it still fails, hand over the raw
 optimization couldn't run (that's the only case the user gets an unoptimized file).
 
 Then **look at the check frames** yourself. Fail = new objects, text, a camera move, color drift,
-a melting static element, or `loop_ok: false`. Regenerate the video once (sharpen the WHAT TO
+a melting static element, or `loop_ok: false`. Regenerate the video once (again `batch_size: 1`; sharpen the WHAT TO
 ANIMATE / STATIC lists), then report instead of looping. Delete the `-frames` folder when done.
 
 ## Output
 
 ```markdown
-Hotové, {n} varianty pre „{title}".
+Hotové, ilustrácia pre „{title}".
 
-- **A:** `{local path}`: {url}
-- **B:** `{local path}`: {url}
+- `{local path}`: {url}
+{only with 2 variants: list them as **A:** / **B:** with paths, and add one verdict line each}
 
 **Farba:** {COLOR_NAME} `{HEX}`. Posledné články: {color 1}, {color 2}, {color 3}. {one-line why}
 
 **Metafora:** {2–3 sentences: the central object and what each element stands for}
 
-- **A** {one-line character + verdict}
-- **B** {one-line character + verdict}
+**Verdikt:** {one line: character of the image + whether the idea reads at a glance}
 
 Pozadie: `{measured hex}` (cieľ `{HEX}`). {only if it matters: offer to recolor}
 
 {only with video=yes:}
-**Video (z varianty {X}):** `{local path}`, {size_kb} KB, {duration} s, {resolution}, bez zvuku, loop {loop_seam} ({ok / viditeľný šev}).
+**Video{only with 2 variants: " (z varianty X)"}:** `{local path}`, {size_kb} KB, {duration} s, {resolution}, bez zvuku, loop {loop_seam} ({ok / viditeľný šev}).
 Animované: {short list of the animated elements}.
 
-{one question: tweak a variant, more variants, or use one somewhere}
+{one question: tweak the image, or use it somewhere; offer another variant only as an option, it costs credits}
 ```
 
 Reply in the user's language (the template above is Slovak, the BRACKETS default).
