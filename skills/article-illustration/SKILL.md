@@ -1,7 +1,7 @@
 ---
 name: article-illustration
-description: Generate a risograph / pop-art header illustration for an article or any piece of content, in a strict 3-color palette (one BRACKETS design-system color + white + black). The color is picked automatically so it differs from the latest meetbrackets.com/thinking articles; only the 10 palette colors are ever used. Optionally animates the image into a seamless, silent, looping MP4 under 1 MB. Trigger with an article URL, pasted text, a file path, or requests like "make a header image for this article", "generate a blog cover", "animate the header", "ilustrácia k článku", "obrázok k článku", "rozanimuj obrázok", "video k článku".
-argument-hint: "<article URL, file path, or pasted content> [color=auto|<palette name>] [video=yes]"
+description: Generate a risograph / pop-art header illustration for an article or any piece of content, in a strict 3-color palette (one BRACKETS design-system color + white + black). The color is picked automatically so it differs from the latest meetbrackets.com/thinking articles; only the 10 palette colors are ever used. Asks up front whether to also animate the image into a seamless, silent, looping MP4 under 1 MB; generation and optimization then run fully automatically, with nothing for the user to install. Trigger with an article URL, pasted text, a file path, or requests like "make a header image for this article", "generate a blog cover", "animate the header", "ilustrácia k článku", "obrázok k článku", "rozanimuj obrázok", "video k článku".
+argument-hint: "<article URL, file path, or pasted content> [color=auto|<palette name>] [video=yes|no]"
 ---
 
 # /article-illustration
@@ -28,7 +28,7 @@ If no content is provided, ask for it. Everything else has a default:
 | `color` | `auto` | Picked by rotation (Step 2b). The user may name a palette color ("keppel", "Crusta") or give a hex. **Only colors from [references/palette.md](references/palette.md) are allowed.** A hex or color name outside the palette snaps to the nearest palette color; say so in the reply. |
 | `variants` | `2` | 1–4 variants of the same prompt. |
 | `ratio` | `16:9` | Blog header. Use `1:1` / `4:5` for social posts, `21:9` for wide banners. |
-| `video` | `no` | `yes` adds Step 6: animate the image into a seamless looping MP4 (no audio, < 1 MB, ~500 KB). Also on when the user asks to animate ("rozanimuj", "aj video"). |
+| `video` | ask | Asked in Step 0 unless already decided. `yes` adds Step 6: animate the image into a seamless looping MP4 (no audio, < 1 MB, ~500 KB). A request to animate ("rozanimuj", "aj video") counts as `yes`. |
 | `duration` | `5` | Video length in seconds (5–15). 5 is the model minimum and the cheapest. |
 
 ## How It Works
@@ -37,6 +37,7 @@ If no content is provided, ask for it. Everything else has a default:
 ┌─────────────────────────────────────────────────────────────────┐
 │                     ARTICLE ILLUSTRATION                         │
 ├─────────────────────────────────────────────────────────────────┤
+│  0. Ask once: image only, or image + looping video?              │
 │  1. Read the content (URL, file, or pasted text)                 │
 │  2. Extract the core idea and invent ONE visual metaphor         │
 │  2b. Pick the palette color (rotation vs. latest articles)       │
@@ -44,12 +45,26 @@ If no content is provided, ask for it. Everything else has a default:
 │  4. Upload style reference → generate variants (high quality)    │
 │  5. Download, check background color + no text, show results    │
 │  6. (video=yes) Animate → strip audio → optimize MP4 < 1 MB      │
+│     (fully automatic: scripts/optimize_video.py, no setup)       │
 ├─────────────────────────────────────────────────────────────────┤
 │  STANDALONE: returns the finished prompts to paste into any      │
 │  image / video model (attach assets/style-reference.jpg)         │
 │  SUPERCHARGED: with ~~image generator, generates the media       │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
+## Step 0 — Ask about the video (once, before anything is generated)
+
+The user should know up front that the illustration can also become a looping video. Unless the
+request already decides it (`video=yes|no`, "rozanimuj", "aj video", "len obrázok"), ask **one**
+question before Step 1 (with AskUserQuestion when available), in the user's language:
+
+> Vygenerovať k ilustrácii aj animované video? Z hotového obrázka spravím jemnú, plynulo sa
+> opakujúcu animáciu (MiniMax H3 Max, lacný model), bez zvuku, ako MP4 do 1 MB (~500 KB).
+> Všetko vrátane optimalizácie urobím sám.
+
+Options: **Iba obrázok** / **Obrázok + video**. Remember the answer and don't ask again. This is the
+only question before generating; everything else has a default.
 
 ## Step 1 — Read the content
 
@@ -87,7 +102,7 @@ Worked examples:
 | Company culture starts at day zero (small team) | Isometric modular team building with people in the windows. A new block is lowered into an empty slot (day zero), the top is still scaffolding (built every day), hands from all sides support it (shared care), and organic ink growth carries ritual symbols (coffee, pizza, dice, music, mountain cabin). |
 
 If the article is vague or you see two equally strong directions, pick the stronger one and mention
-the alternative in one line of the reply. Don't ask before generating.
+the alternative in one line of the reply. Don't ask about it before generating (the Step 0 video question is the only one).
 
 ## Step 2b — Pick the color
 
@@ -277,43 +292,44 @@ On Higgsfield with `generate_video`:
 - `<id>`: the generated image's media id if the generation result exposes one; otherwise
   `media_import_url` with the result URL. If the image was recolored locally, upload the local file
   with the Step 4 upload flow (`type: image`).
-- `jobs_wait`, then download the raw MP4 to the scratch directory.
+- `jobs_wait`, then download the raw MP4 to the scratch directory yourself (e.g. `curl -L -o raw.mp4 <url>`).
 
-Without a video generator: return the filled animation prompt and tell the user to run it as
-image-to-video with the image as both start and end frame, then do 6.4 themselves.
+Without a video generator: return the filled animation prompt and say it runs as image-to-video
+with the image as both start and end frame. If the user later brings back the raw video, run 6.4
+on it for them.
 
-### 6.4 Strip audio and optimize to < 1 MB
+### 6.4 Optimize and verify (automatic, one command)
 
-Needs `ffmpeg`/`ffprobe`. If they're missing, say so (Windows: `winget install Gyan.FFmpeg`, macOS:
-`brew install ffmpeg`), hand over the raw MP4, and stop here.
+**Rule: the user never installs, runs or converts anything.** Claude runs every step of the video
+pipeline itself and hands over a finished file. Never reply with "install ffmpeg" or a command for
+the user to run; if something fails, fix it or retry, and only report what couldn't be done.
 
-Target ~500 KB, hard limit 1 MB. Video bitrate in kbit/s: `floor(500 * 8 / duration * 0.95)`
-(≈ 760k for 5 s, ≈ 630k for 6 s). Two-pass H.264, no audio, max 1280 px wide, web-friendly. Run it
-in the scratch directory (pass 1 writes log files there):
+Run the bundled script (path relative to this skill's folder) on the raw download:
 
-```bash
-VF="scale='min(1280,iw)':-2,format=yuv420p"
-ffmpeg -y -i raw.mp4 -an -c:v libx264 -preset slow -b:v 760k -vf "$VF" -pass 1 -passlogfile x264 -f null -
-ffmpeg -y -i raw.mp4 -an -c:v libx264 -preset slow -b:v 760k -maxrate 1100k -bufsize 1520k \
-  -vf "$VF" -profile:v high -pass 2 -passlogfile x264 -movflags +faststart file.mp4
+```
+python scripts/optimize_video.py <scratch>/raw.mp4 -o <scratch>/file.mp4
 ```
 
-Check the size. Over 1 MB, or well above ~600 KB: lower the bitrate by ~20 % and redo both passes
-(at most 2 retries). Delete the `x264*.log*` files afterwards.
+It needs only Python + Pillow (already required by Step 5) and handles everything:
 
-### 6.5 Verify the video
+- **ffmpeg without setup:** uses `ffmpeg` from PATH if there is one; otherwise installs the
+  `imageio-ffmpeg` wheel (static ffmpeg for Windows / macOS / Linux) into
+  `~/.cache/article-illustration/vendor` once (~6 s, no admin rights, nothing system-wide) and
+  reuses it on later runs.
+- **Encode:** strips audio, scales to max 1280 px wide, two-pass H.264 (`yuv420p`, `+faststart`)
+  at a bitrate computed from the ~500 KB target and the duration (≈ 760 kbit/s for 5 s). Over
+  1 MB, or more than 20 % over the target → bitrate −20 % and re-encode (max 2 retries).
+- **Verify:** no audio stream, size, duration, resolution, and the loop seam (first vs. last frame,
+  compared at 320 px wide so halftone compression noise doesn't count; `loop_ok` below 4). Saves
+  check frames (`first`, `25%`, `50%`, `75%`, `last`) to `<out>-frames/`.
+- Prints a JSON report as the last line; exit code 1 means over the limit or audio left in.
 
-- **No audio:** `ffprobe -v error -select_streams a -show_entries stream=index -of csv=p=0 file.mp4`
-  prints nothing.
-- **Size and duration:** `ffprobe -v error -show_entries format=duration,size -of csv=p=0 file.mp4`.
-- **Loop seam:** extract the first and last frame
-  (`ffmpeg -v error -i file.mp4 -frames:v 1 first.png` and
-  `ffmpeg -v error -sseof -0.1 -i file.mp4 -frames:v 1 last.png`) and compare them with PIL
-  (`ImageStat.Stat(ImageChops.difference(a, b)).mean`). An average under ~5 per channel loops
-  cleanly; report the number.
-- **Watch it:** look at a few extracted frames (e.g. at 25 %, 50 %, 75 %). Fail = new objects,
-  text, a camera move, color drift or a melting static element. Regenerate once, then report
-  instead of looping.
+If pip can't reach the network, retry once; if it still fails, hand over the raw MP4 and say the
+optimization couldn't run (that's the only case the user gets an unoptimized file).
+
+Then **look at the check frames** yourself. Fail = new objects, text, a camera move, color drift,
+a melting static element, or `loop_ok: false`. Regenerate the video once (sharpen the WHAT TO
+ANIMATE / STATIC lists), then report instead of looping. Delete the `-frames` folder when done.
 
 ## Output
 
@@ -333,7 +349,7 @@ Hotové, {n} varianty pre „{title}".
 Pozadie: `{measured hex}` (cieľ `{HEX}`). {only if it matters: offer to recolor}
 
 {only with video=yes:}
-**Video (z varianty {X}):** `{local path}`, {size} KB, {duration} s, bez zvuku, loop diff {n}.
+**Video (z varianty {X}):** `{local path}`, {size_kb} KB, {duration} s, {resolution}, bez zvuku, loop {loop_seam} ({ok / viditeľný šev}).
 Animované: {short list of the animated elements}.
 
 {one question: tweak a variant, more variants, or use one somewhere}
