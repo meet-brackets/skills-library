@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Sitemap of meetbrackets.com (brackets-web, Oct 2026): navigation | footer + pages outside the menu,
+     with real paths and counts. Root on top, rounded elbows into two columns; children hang off a
+     tree spine (├ └ with rounded turns), all lines drawn by diagram.js. One accent fill (root),
+     the contact CTA outlined in accent. -->
+<link rel="stylesheet" href="base.css">
+<style>
+  .diagram { --pad: 64px; gap: 0; }
+  .root { align-self: center; flex-direction: row; align-items: baseline; gap: 24px; padding: 26px 44px; }
+  .path { font-family: var(--font-mono); font-size: var(--fs-text); font-weight: 500; color: var(--d-subtle); white-space: nowrap; }
+  .box.fill .path { color: var(--d-on-accent); }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; margin-top: 76px; }
+  .col { display: flex; flex-direction: column; gap: 34px; }
+  .col .eyebrow { align-self: center; }
+  .page { display: flex; flex-direction: column; }
+  .page__head { display: flex; flex-direction: column; gap: 4px; align-self: flex-start; padding-bottom: 6px; }
+  .kids { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; margin-top: 10px; padding-left: 40px; }
+  .kid { font-size: var(--fs-text); line-height: 1.3; }
+  .kid.count, .kid .count { color: var(--d-subtle); }
+  .kids .pill.small { padding: 4px 22px; }
+</style>
+</head>
+<body>
+<script src="diagram.js"></script>
+<div class="diagram ratio-auto">
+  <div class="box fill root" id="root">
+    <span class="label">meetbrackets.com</span>
+    <span class="path"><span data-l="en">/</span><span data-l="sk">/sk</span></span>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      <span class="eyebrow" id="g-menu"><span data-l="en">Main menu</span><span data-l="sk">Hlavné menu</span></span>
+
+      <div class="page">
+        <div class="page__head" id="p-approach"><span class="label"><span data-l="en">Approach</span><span data-l="sk">Ako premýšľame</span></span>
+          <span class="path"><span data-l="en">/approach</span><span data-l="sk">/ako-premyslame</span></span></div>
+        <div class="kids" data-tree-from="p-approach" data-inset="12" data-gap="10">
+          <span class="kid"><span data-l="en">Product &amp; Discovery</span><span data-l="sk">Produktový discovery</span></span>
+          <span class="kid"><span data-l="en">Build &amp; Delivery</span><span data-l="sk">Vývoj a dodanie</span></span>
+          <span class="kid"><span data-l="en">Own Your Software</span><span data-l="sk">Vlastnite svoj softvér</span></span>
+          <span class="kid"><span data-l="en">AI &amp; Modern Tech</span><span data-l="sk">AI &amp; moderné technológie</span></span>
+        </div>
+      </div>
+
+      <div class="page">
+        <div class="page__head" id="p-projects"><span class="label"><span data-l="en">Projects</span><span data-l="sk">Projekty</span></span>
+          <span class="path"><span data-l="en">/case-studies</span><span data-l="sk">/pripadove-studie</span></span></div>
+        <div class="kids" data-tree-from="p-projects" data-inset="12" data-gap="10"><span class="kid count"><span data-l="en">24 case studies</span><span data-l="sk">24 prípadových štúdií</span></span></div>
+      </div>
+
+      <div class="page">
+        <div class="page__head" id="p-thinking"><span class="label"><span data-l="en">Thinking</span><span data-l="sk">Názory</span></span>
+          <span class="path"><span data-l="en">/thinking</span><span data-l="sk">/nazory</span></span></div>
+        <div class="kids" data-tree-from="p-thinking" data-inset="12" data-gap="10"><span class="kid count"><span data-l="en">10 articles</span><span data-l="sk">10 článkov</span></span></div>
+      </div>
+
+      <div class="page">
+        <div class="page__head" id="p-resources"><span class="label"><span data-l="en">Resources</span><span data-l="sk">Zdroje</span></span></div>
+        <div class="kids" data-tree-from="p-resources" data-inset="12" data-gap="10">
+          <span class="kid">Blog</span>
+          <span class="kid"><span data-l="en">Glossary</span><span data-l="sk">Slovník</span> <span class="count"><span data-l="en">· 48 terms</span><span data-l="sk">· 48 pojmov</span></span></span>
+        </div>
+      </div>
+
+      <div class="page">
+        <div class="page__head" id="p-about"><span class="label"><span data-l="en">About</span><span data-l="sk">O nás</span></span>
+          <span class="path"><span data-l="en">/about</span><span data-l="sk">/o-nas</span></span></div>
+        <div class="kids" data-tree-from="p-about" data-inset="12" data-gap="10">
+          <span class="kid"><span data-l="en">Careers</span><span data-l="sk">Kariéra</span></span>
+          <span class="pill small accent"><span data-l="en">Let's talk</span><span data-l="sk">Kontakt</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <span class="eyebrow" id="g-footer"><span data-l="en">Footer</span><span data-l="sk">Pätička</span></span>
+
+      <div class="page">
+        <div class="page__head" id="p-solutions"><span class="label"><span data-l="en">Solutions</span><span data-l="sk">Riešenia</span></span></div>
+        <div class="kids" data-tree-from="p-solutions" data-inset="12" data-gap="10">
+          <span class="kid"><span data-l="en">Legacy codebase</span><span data-l="sk">Modernizácia legacy kódu</span></span>
+          <span class="kid"><span data-l="en">SaaS replacement</span><span data-l="sk">Softvér na mieru vs. SaaS</span></span>
+          <span class="kid"><span data-l="en">Healthcare software</span><span data-l="sk">Softvér pre zdravotníctvo</span></span>
+          <span class="kid"><span data-l="en">Fintech software</span><span data-l="sk">Softvér pre finančné služby</span></span>
+        </div>
+      </div>
+
+      <div class="page">
+        <div class="page__head" id="p-legal"><span class="label"><span data-l="en">Legal</span><span data-l="sk">Právne</span></span></div>
+        <div class="kids" data-tree-from="p-legal" data-inset="12" data-gap="10">
+          <span class="kid"><span data-l="en">Privacy policy</span><span data-l="sk">Ochrana osobných údajov</span></span>
+          <span class="kid"><span data-l="en">Use of AI</span><span data-l="sk">Používanie AI</span></span>
+          <span class="kid"><span data-l="en">Cookie policy</span><span data-l="sk">Zásady cookies</span></span>
+        </div>
+      </div>
+
+      <span class="eyebrow"><span data-l="en">Outside the menu</span><span data-l="sk">Mimo menu</span></span>
+
+      <div class="page">
+        <div class="page__head" id="p-tools"><span class="label"><span data-l="en">Tools</span><span data-l="sk">Nástroje</span></span>
+          <span class="path">/tools <span data-l="en">· EN only</span><span data-l="sk">· len EN</span></span></div>
+        <div class="kids" data-tree-from="p-tools" data-inset="12" data-gap="10">
+          <span class="kid">Code audit</span>
+          <span class="kid">Build Estimator</span>
+          <span class="kid">ROI Calculator</span>
+          <span class="kid">SaaS Check</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <i class="link" data-from="root" data-to="g-menu" data-shape="elbow" data-radius="22" data-gap="14"></i>
+  <i class="link" data-from="root" data-to="g-footer" data-shape="elbow" data-radius="22" data-gap="14"></i>
+</div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Pattern 4: 2×2 matrix. Y axis = first criterion, X axis = second. One quadrant (the best) is filled. -->
+<link rel="stylesheet" href="base.css">
+<style>
+  .m { display: grid; grid-template-columns: auto 1fr; grid-template-rows: 1fr auto; gap: 24px 28px; flex: 1; }
+  .m__y { display: grid; grid-template-rows: auto 1fr auto; justify-items: end; text-align: right; }
+  .m__y .label { align-self: center; }
+  .m__axis-y { border-left: var(--hair) solid var(--d-line); border-bottom: var(--hair) solid var(--d-line); padding: 0 0 24px 24px;
+               display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 24px; }
+  .m__x { grid-column: 2; display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; padding-left: 24px; }
+  .m__x .label { text-align: center; }
+  .m .box { justify-content: flex-start; padding-top: 56px; } /* top-aligned so headings in a row line up */
+</style>
+</head>
+<body>
+<script src="diagram.js"></script>
+<div class="diagram">
+  <div class="m">
+    <div class="m__y">
+      <span class="text"><span data-l="en">high</span><span data-l="sk">vysoký</span></span>
+      <span class="label"><span data-l="en">Impact</span><span data-l="sk">Dopad</span></span>
+      <span class="text"><span data-l="en">low</span><span data-l="sk">nízky</span></span>
+    </div>
+    <div class="m__axis-y">
+      <div class="box fill">
+        <span class="label"><span data-l="en">Quick wins</span><span data-l="sk">Rýchle výhry</span></span>
+        <span class="text"><span data-l="en">Error right at the field</span><span data-l="sk">Chyba priamo pri poli</span></span>
+      </div>
+      <div class="box">
+        <span class="label"><span data-l="en">Big bets</span><span data-l="sk">Veľké stávky</span></span>
+        <span class="text"><span data-l="en">New checkout flow</span><span data-l="sk">Nový proces objednávky</span></span>
+      </div>
+      <div class="box">
+        <span class="label"><span data-l="en">Fill-ins</span><span data-l="sk">Doplnky</span></span>
+        <span class="text"><span data-l="en">Clearer button copy</span><span data-l="sk">Jasnejší text tlačidla</span></span>
+      </div>
+      <div class="box">
+        <span class="label"><span data-l="en">Hold off</span><span data-l="sk">Odložiť</span></span>
+        <span class="text"><span data-l="en">Redesign of a rarely used page</span><span data-l="sk">Redizajn málo používanej stránky</span></span>
+      </div>
+    </div>
+    <div class="m__x">
+      <span class="text"><span data-l="en">low</span><span data-l="sk">nízka</span></span>
+      <span class="label"><span data-l="en">Effort</span><span data-l="sk">Náročnosť</span></span>
+      <span class="text"><span data-l="en">high</span><span data-l="sk">vysoká</span></span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

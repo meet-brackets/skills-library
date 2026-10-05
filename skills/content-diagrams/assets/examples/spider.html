@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Spider diagram for "Spider diagrams: Untangle complex ideas" (form taken from a Miro reference:
+     hub, four branches in the quadrants, three leaves per branch pointing outwards, straight radial
+     lines). Hub = the one accent fill. Leaves carry data-cat: --colors palette colors them per branch.
+     Positions are centers on a 1072 × 900 field (canvas 1200 − 2 × 64 padding), mirrored left/right. -->
+<link rel="stylesheet" href="base.css">
+<style>
+  .diagram { --pad: 64px; }
+  .sp { position: relative; width: 1072px; height: 900px; }
+  .node { position: absolute; transform: translate(-50%, -50%); background: var(--d-bg);
+          display: flex; align-items: center; justify-content: center; text-align: center; }
+  .hub { width: 240px; height: 240px; border-radius: 50%; background: var(--d-accent); color: var(--d-on-accent); padding: 24px; }
+  .branch { border: var(--stroke) solid var(--d-outline); border-radius: 999px; padding: 18px 40px; white-space: nowrap; min-width: 270px; }
+  .leaf { width: 210px; height: 88px; border: var(--hair) solid var(--d-line); border-radius: 20px;
+          font-size: var(--fs-text); font-weight: 500; }
+</style>
+</head>
+<body>
+<script src="diagram.js"></script>
+<div class="diagram ratio-auto">
+  <div class="sp">
+    <div class="node hub label" id="hub" style="left:536px; top:450px"><span data-l="en">New product</span><span data-l="sk">Nový produkt</span></div>
+
+    <!-- top left: customer -->
+    <div class="node branch label" id="b1" style="left:385px; top:250px"><span data-l="en">Customer</span><span data-l="sk">Zákazník</span></div>
+    <div class="node leaf cat-fill" data-cat="cornflower-blue" id="b1a" style="left:105px; top:44px"><span data-l="en">Problem</span><span data-l="sk">Problém</span></div>
+    <div class="node leaf cat-fill" data-cat="cornflower-blue" id="b1b" style="left:385px; top:44px"><span data-l="en">Segments</span><span data-l="sk">Segmenty</span></div>
+    <div class="node leaf cat-fill" data-cat="cornflower-blue" id="b1c" style="left:105px; top:250px"><span data-l="en">Channels</span><span data-l="sk">Kanály</span></div>
+
+    <!-- top right: team -->
+    <div class="node branch label" id="b2" style="left:687px; top:250px"><span data-l="en">Team</span><span data-l="sk">Tím</span></div>
+    <div class="node leaf cat-fill" data-cat="princess-perfume" id="b2a" style="left:967px; top:44px"><span data-l="en">Roles</span><span data-l="sk">Roly</span></div>
+    <div class="node leaf cat-fill" data-cat="princess-perfume" id="b2b" style="left:687px; top:44px"><span data-l="en">Capacity</span><span data-l="sk">Kapacita</span></div>
+    <div class="node leaf cat-fill" data-cat="princess-perfume" id="b2c" style="left:967px; top:250px"><span data-l="en">Partners</span><span data-l="sk">Partneri</span></div>
+
+    <!-- bottom left: money -->
+    <div class="node branch label" id="b3" style="left:385px; top:650px"><span data-l="en">Money</span><span data-l="sk">Peniaze</span></div>
+    <div class="node leaf cat-fill" data-cat="keppel" id="b3a" style="left:105px; top:650px"><span data-l="en">Pricing</span><span data-l="sk">Cena</span></div>
+    <div class="node leaf cat-fill" data-cat="keppel" id="b3b" style="left:385px; top:856px"><span data-l="en">Costs</span><span data-l="sk">Náklady</span></div>
+    <div class="node leaf cat-fill" data-cat="keppel" id="b3c" style="left:105px; top:856px"><span data-l="en">Margin</span><span data-l="sk">Marža</span></div>
+
+    <!-- bottom right: risks -->
+    <div class="node branch label" id="b4" style="left:687px; top:650px"><span data-l="en">Risks</span><span data-l="sk">Riziká</span></div>
+    <div class="node leaf cat-fill" data-cat="biloba-flower" id="b4a" style="left:967px; top:650px"><span data-l="en">Deadline</span><span data-l="sk">Termín</span></div>
+    <div class="node leaf cat-fill" data-cat="biloba-flower" id="b4b" style="left:687px; top:856px"><span data-l="en">Market</span><span data-l="sk">Trh</span></div>
+    <div class="node leaf cat-fill" data-cat="biloba-flower" id="b4c" style="left:967px; top:856px"><span data-l="en">Legal</span><span data-l="sk">Právo</span></div>
+  </div>
+
+  <i class="link" data-from="hub" data-to="b1" data-shape="radial" data-weight="stroke"></i>
+  <i class="link" data-from="hub" data-to="b2" data-shape="radial" data-weight="stroke"></i>
+  <i class="link" data-from="hub" data-to="b3" data-shape="radial" data-weight="stroke"></i>
+  <i class="link" data-from="hub" data-to="b4" data-shape="radial" data-weight="stroke"></i>
+  <i class="link" data-from="b1" data-to="b1a" data-shape="radial"></i><i class="link" data-from="b1" data-to="b1b" data-shape="radial"></i><i class="link" data-from="b1" data-to="b1c" data-shape="radial"></i>
+  <i class="link" data-from="b2" data-to="b2a" data-shape="radial"></i><i class="link" data-from="b2" data-to="b2b" data-shape="radial"></i><i class="link" data-from="b2" data-to="b2c" data-shape="radial"></i>
+  <i class="link" data-from="b3" data-to="b3a" data-shape="radial"></i><i class="link" data-from="b3" data-to="b3b" data-shape="radial"></i><i class="link" data-from="b3" data-to="b3c" data-shape="radial"></i>
+  <i class="link" data-from="b4" data-to="b4a" data-shape="radial"></i><i class="link" data-from="b4" data-to="b4b" data-shape="radial"></i><i class="link" data-from="b4" data-to="b4c" data-shape="radial"></i>
+</div>
+</body>
+</html>
